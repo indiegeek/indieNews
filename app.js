@@ -2,13 +2,25 @@
 const axios = require('axios');
 const env = require('dotenv').config();
 const express = require('express');
+const db = require('diskdb');
 
 //app vars
+const server = express();
 let apiKey = process.env.APIKEY //up to 10,000 calls/day for 90 days
 let lang = "en";
 let sort = "relevancy";
 let page = 1;
 var topics = ["puppies", "kittens", "fish", "chickens", "horses", "cows"] //topics to fetch content on, will move these externally eventually
+const port = 4000;
+
+//app functions
+
+db.connect('./data', ['db']);
+
+if (!db.db.find().length) {
+    const initDB = {id: "INIT", topic: "INIT", lang: "INIT"};
+    db.db.save(initDB)
+}
 
 //loop through each topic and fetch the results (currently just writes out the calls to make)
 for (let i = 0; i < topics.length; i++) {
@@ -24,6 +36,13 @@ for (let i = 0; i < topics.length; i++) {
         console.log(makeCalls);
         }    
 
+server.get("/", (req, res) => {
+    res.sendFile(__dirname + '/html/index.html');
+});
+
+server.listen(port, () => {
+    console.log(`Server listening at ${port}`);
+});
 // var options = {
 //   method: 'GET',
 //   url: 'https://api.newscatcherapi.com/v2/search',
