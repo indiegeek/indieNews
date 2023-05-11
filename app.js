@@ -1,17 +1,23 @@
+//required packages, axios for api calling, env for .env vars, express to serve content
 const axios = require('axios');
 const env = require('dotenv').config();
+const express = require('express');
 
-let apiKey = process.env.APIKEY
+//app vars
+let apiKey = process.env.APIKEY //up to 10,000 calls/day for 90 days
+let lang = "en";
+let sort = "relevancy";
+let page = 1;
+var topics = ["puppies", "kittens", "fish", "chickens", "horses", "cows"] //topics to fetch content on, will move these externally eventually
 
-var topics = ["puppies", "kittens", "fish", "chickens", "horses", "cows"]
-
+//loop through each topic and fetch the results (currently just writes out the calls to make)
 for (let i = 0; i < topics.length; i++) {
     let currentTopic = topics[i]
     console.log(currentTopic)
     let makeCalls = `options = {
         method: 'GET',
         url: 'https://api.newscatcherapi.com/v2/search',
-        params: {q: '${ currentTopic }', lang: 'en', sort_by: 'relevancy', page: '1'},
+        params: {q: '${ currentTopic }', lang: '${ lang }', sort_by: '${ sort }', page: '${ page }'},
         headers: {
             'x-api-key': ${ apiKey } 
         };`
