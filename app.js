@@ -15,17 +15,18 @@ const port = 4000;
 
 //app functions
 
-db.connect('./data', ['db']);
+db.connect('./data', ['topics']);
 
-if (!db.db.find().length) {
+//if the db is new, initialize it
+if (!db.topics.find().length) {
     const initDB = {id: "INIT", topic: "INIT", lang: "INIT"};
-    db.db.save(initDB)
+    db.topics.save(initDB)
 }
 
 //loop through each topic and fetch the results (currently just writes out the calls to make)
 for (let i = 0; i < topics.length; i++) {
     let currentTopic = topics[i]
-    console.log(currentTopic)
+    // console.log(currentTopic)
     let makeCalls = `options = {
         method: 'GET',
         url: 'https://api.newscatcherapi.com/v2/search',
@@ -33,7 +34,7 @@ for (let i = 0; i < topics.length; i++) {
         headers: {
             'x-api-key': ${ apiKey } 
         };`
-        console.log(makeCalls);
+        // console.log(makeCalls);
         }    
 
 server.get("/", (req, res) => {
