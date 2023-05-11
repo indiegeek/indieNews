@@ -10,7 +10,6 @@ let apiKey = process.env.APIKEY //up to 10,000 calls/day for 90 days
 let lang = "en";
 let sort = "relevancy";
 let page = 1;
-var topics = ["puppies", "kittens", "fish", "chickens", "horses", "cows"] //topics to fetch content on, will move these externally eventually
 const port = 4000;
 
 //app functions
@@ -19,23 +18,12 @@ db.connect('./data', ['topics']);
 
 //if the db is new, initialize it
 if (!db.topics.find().length) {
-    const initDB = {id: "INIT", topic: "INIT", lang: "INIT"};
+    const initDB = {id: 1, category: "INIT", topic: "INIT", lang: "INIT"};
     db.topics.save(initDB)
+    console.log("Database was empty, initalized.")
 }
 
 //loop through each topic and fetch the results (currently just writes out the calls to make)
-for (let i = 0; i < topics.length; i++) {
-    let currentTopic = topics[i]
-    // console.log(currentTopic)
-    let makeCalls = `options = {
-        method: 'GET',
-        url: 'https://api.newscatcherapi.com/v2/search',
-        params: {q: '${ currentTopic }', lang: '${ lang }', sort_by: '${ sort }', page: '${ page }'},
-        headers: {
-            'x-api-key': ${ apiKey } 
-        };`
-        // console.log(makeCalls);
-        }    
 server.use(bodyParser.json());
 server.use(bodyParser.urlencoded({extended: false}))
 server.get("/", (req, res) => {
@@ -55,9 +43,15 @@ server.post("/api/v1/addNewTopic", (req, res) => {
           success: 'false',
           message: 'lang is required'
         });
+    } else if(!req.body.category) {
+        return res.status(400).send({
+            success: 'false',
+            message: 'category is required'
+        });
       } 
       const newTopic = {
         id: db.topics.find().length+1,
+        category: req.body.category,
         topic: req.body.topic,
         lang: req.body.lang
       }
@@ -68,16 +62,17 @@ server.post("/api/v1/addNewTopic", (req, res) => {
         newTopic
       })
 })
-// var options = {
-//   method: 'GET',
-//   url: 'https://api.newscatcherapi.com/v2/search',
-//   params: {q: 'Bitcoin', lang: 'en', sort_by: 'relevancy', page: '1'},
-//   headers: {
-//     'x-api-key': apiKey
-//   }
-// };
-// }
 
+let myTopics = db.topics.find().length;
+console.log(myTopics)
+for (let i = 2; i < myTopics; i++) {
+    let getTopics = db.topics.find({id: i});
+    for (let i2 = 0; i2 < getTopics.length; i2++) {
+        console.log(getTopics[i2].topic)
+    }
+}
+
+console.log(myTopics)
 // var options = {
 //   method: 'GET',
 //   url: 'https://api.newscatcherapi.com/v2/search',
