@@ -15,12 +15,16 @@
   "author": "indiegeek",
   "license": "ISC",
   "dependencies": {
+    "async-sema": "^3.1.1",
     "axios": "^1.4.0",
+    "axios-concurrency": "^1.0.4",
     "babel-cli": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
     "body-parser": "^1.20.2",
+    "chalk": "^5.2.0",
     "diskdb": "^0.1.17",
     "dotenv": "^16.0.3",
+    "event-loop-sleep": "^1.0.2",
     "express": "^4.18.2"
   }
 }
